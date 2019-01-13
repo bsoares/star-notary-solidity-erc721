@@ -10,18 +10,37 @@
 
   <hr>
 
-  <br>
-    <h1>Create a Star</h1>
-    <br><label for="starName">Star Name:</label><input type="text" id="starName"></input>
-    <br><label for="starId">Star ID:</label><input type="text" id="starId"></input>
-    <br><br><button id="createStar" onclick="App.createStar()">Create Star</button>
-    <br><br>
-    <br>
+  <h1>Create a Star</h1>
+  <br><label for="starName">Star Name:</label><input type="text" id="starName"></input>
+  <br><label for="starId">Star ID:</label><input type="text" id="starId"></input>
+  <br><br>
+  <button id="createStar" onclick="App.createStar()">Create Star</button>
 
-    <span id="status"></span>
+  <br><br><br>
 
-<!--Add an input box and a button to Lookup a star by ID using tokenIdToStarInfo-->
+  <h1>Get Star by ID</h1>
+  <br><label for="get_starId">Star ID:</label><input type="text" id="get_starId"></input>
+  <br><br>
+  <button id="getStar" onclick="App.getStar()">Get Star by ID</button>
 
-    <br>
+  <br><br><br>
+
+  <h1>Exchange Star</h1>
+  <br><label for="starId_1">Star 1 ID:</label><input type="text" id="starId_1"></input>
+  <br><label for="starId_2">Star 2 ID:</label><input type="text" id="starId_2"></input>
+  <br><br>
+  <button id="exchangeStars" onclick="App.exchangeStars()">Exchange Star</button>
+
+  <br><br><br>
+
+  <h1>Transfer Star</h1>
+  <br><label for="transfer_starId">Star ID:</label><input type="text" id="transfer_starId"></input>
+  <br><label for="transfer_toAddress">To Address:</label><input type="text" id="transfer_toAddress"></input>
+  <br><br>
+  <button id="transferStar" onclick="App.transferStar()">Transfer Star</button>
+
+  <br><br><br>
+
+  <span id="status"></span>
 </body>
 </html>

@@ -1,68 +1,95 @@
 // Import the page's CSS. Webpack will know what to do with it.
-import '../styles/app.css'
+import '../styles/app.css';
 
 // Import libraries we need.
-import { default as Web3 } from 'web3'
-import { default as contract } from 'truffle-contract'
+import { default as Web3 } from 'web3';
+import { default as contract } from 'truffle-contract';
 
 // Import our contract artifacts and turn them into usable abstractions.
-import StarNotaryArtifact from '../../build/contracts/StarNotary.json'
+import StarNotaryArtifact from '../../build/contracts/StarNotary.json';
 
 // StarNotary is our usable abstraction, which we'll use through the code below.
-const StarNotary = contract(StarNotaryArtifact)
+const StarNotary = contract(StarNotaryArtifact);
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
 // For application bootstrapping, check out window.addEventListener below.
-let accounts
-let account
-
-const createStar = async () => {
-  const instance = await StarNotary.deployed();
-  const name = document.getElementById("starName").value;
-  const id = document.getElementById("starId").value;
-  await instance.createStar(name, id, {from: account});
-  App.setStatus("New Star Owner is " + account + ".");
-}
-
-// Add a function lookUp to Lookup a star by ID using tokenIdToStarInfo()
-
-//
+let accounts;
+let account;
 
 const App = {
+  contractInstance: null,
+
   start: function () {
-    const self = this
+    const self = this;
 
     // Bootstrap the MetaCoin abstraction for Use.
-    StarNotary.setProvider(web3.currentProvider)
+    StarNotary.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
-    web3.eth.getAccounts(function (err, accs) {
+    web3.eth.getAccounts(async function (err, accs) {
       if (err != null) {
-        alert('There was an error fetching your accounts.')
-        return
+        alert('There was an error fetching your accounts.');
+        return;
       }
 
       if (accs.length === 0) {
-        alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.")
-        return
+        alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
+        return;
       }
 
-      accounts = accs
-      account = accounts[0]
+      accounts = accs;
+      account = accounts[0];
 
+      self.contractInstance = await StarNotary.deployed();
     })
   },
 
   setStatus: function (message) {
-    const status = document.getElementById('status')
-    status.innerHTML = message
+    const status = document.getElementById('status');
+    status.innerHTML = message;
   },
 
-  createStar: function () {
-    createStar();
+  createStar: async function () {
+    const name = document.getElementById("starName").value;
+    const id = document.getElementById("starId").value;
+
+    await this.contractInstance.createStar(name, id, { from: account });
+
+    App.setStatus("New Star Owner is " + account + ".");
   },
 
+  getStar: async function () {
+    const id = document.getElementById("get_starId").value;
+    console.log('[getStar] id:', id);
+
+    const starName = await this.contractInstance.lookUptokenIdToStarInfo(id);
+    if (starName) {
+      App.setStatus('Star #' + id + ' name is: ' + starName + '.');
+    } else {
+      App.setStatus('Star not found');
+    }
+  },
+
+  exchangeStars: async function () {
+    const star1 = document.getElementById("starId_1").value;
+    console.log('[exchangeStars] star1:', star1);
+
+    const star2 = document.getElementById("starId_2").value;
+    console.log('[exchangeStars] star2:', star2);
+
+    await this.contractInstance.exchangeStars(star1, star2, { from: account });
+  },
+
+  transferStar: async function () {
+    const starId = document.getElementById("transfer_starId").value;
+    console.log('[exchangeStars] starId:', starId);
+
+    const toAddress = document.getElementById("transfer_toAddress").value;
+    console.log('[exchangeStars] toAddress:', toAddress);
+
+    await this.contractInstance.transferStar(starId, toAddress, { from: account });
+  },
 }
 
 window.App = App
